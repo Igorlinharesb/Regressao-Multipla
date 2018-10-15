@@ -1,179 +1,80 @@
-%Questão 1:
+% Universidade Federal do Ceará
+% Inteligência Computacional - 2018.1
+% Prof. Jarbas Joaci
+% 374873 - Francisco Igor Felicio Linhares
+%Questão 1: Regressão Polinomial de graus 2 a 5.
 
-grau = input('Digite o grau do modelo de regressão desejado: ');
+%Limpa o ambiente de trabalho
+clc;
+clear;
+close all;
+
+%Carrega base de dados
+load aerogerador.dat; 
+V = aerogerador (:,1);
+P = aerogerador (:,2);
+
+grau = input ('Digite o grau do modelo de regressão desejado: ');
+[Beta] = CalculaBeta(grau, aerogerador); 
+
     switch (grau)
         case 2
-            % Regressão Polinomial de Grau 2.
-            X = ones (2250,3);
-            Y = ones (2250,1);
-            i=1;
-            while i<=2250
-                X(2250+i)= Vel(i);
-                X(4500+i) = Vel(i)^2;
-                Y(i)= Pot(i);
-                i = i+1;
-            end
-            % Encontrar o vetor de coeficientes Beta.
-                Beta = inv(((X.')*X)) * ((X.')*Y);
-            % Plotando o gráfico:
+            % Gera o Polinômio:
                 x = 0:0.2:15;
-                Poli2 = Beta(1) + Beta(2)*x + Beta(3)*(x.^2);
-                plot (x, Poli2, 'r');
-                hold on;
-                plot (Vel, Pot, '.');
-                grid on;
-                
-             %Avaliando a qualidade do modelo pela métrica R2:
-                ymed = sum(Y)/ length(Y);
+                Poli = Beta(1) + Beta(2)*x + Beta(3)*(x.^2);
+            % Calculando os valores para a Potência estimada
                 i=1;
-                while i<=length (Y);
-                yest(i) = Beta(1) + Beta(2)*(Vel(i)) + Beta(3)*(Vel(i).^2);
-                SQe(i) = (Y(i)-yest(i))^2;
-                Syy(i) = (Y(i)-ymed)^2;
+                while i<=length (P);
+                yest(i) = Beta(1) + Beta(2)*(V(i)) + Beta(3)*(V(i).^2);
                 i=i+1;
                 end
-    
-                R2(grau-1)= 1-((sum(SQe)/sum(Syy)));
-                
-        %Avaliando a qualidade do modelo pela métrica R2 Ajustada:
-                n = length (Y);
-               p = length (Beta);
-              
-              R2aj (grau-1) = 1-((sum(SQe)/(n-p))/(sum(Syy)/(n-1)));
-
-                n = length (Y);
-                p = length (Beta);
-              
-                R2aj (grau-1) = 1-((sum(SQe)/(n-p))/(sum(Syy)/(n-1)));
           
-        case 3
-        % Regressão Polinomial de Grau 3.
-            X = ones (2250,4);
-            Y = ones (2250,1);
-            i=1;
-            while i<=2250
-                X(2250+i)= Vel(i);
-                X(4500+i) = Vel(i)^2;
-                X(6750+i) = Vel(i)^3;
-                Y(i)= Pot(i);
-                i = i+1;
-            end
-            % Encontrar o vetor de coeficientes Beta.
-                Beta = inv(((X.')*X)) * ((X.')*Y);
-            % Plotando o gráfico:
+        case 3 % Regressão Polinomial de Grau 3.
+            % Gerando o Polinômio
                 x = 0:0.2:15;
-                Poli3 = Beta(1) + Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3);
-                plot (x, Poli3, 'g');
-                hold on;
-                plot (Vel, Pot, '.');
-                grid on;
-                
-             %Avaliando a qualidade do modelo pela métrica R2:
-                ymed = sum(Y)/ length(Y);
+                Poli = Beta(1) + Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3);                
+            % Calculando os valores para a Potência estimada
                 i=1;
-                while i<=length (Y);
-                yest(i) = Beta(1) + Beta(2)*(Vel(i)) + Beta(3)*(Vel(i).^2) + Beta(4)*(Vel(i).^3);
-                SQe(i) = (Y(i)-yest(i))^2;
-                Syy(i) = (Y(i)-ymed)^2;
+                while i<=length (P);
+                yest(i) = Beta(1) + Beta(2)*(V(i)) + Beta(3)*(V(i).^2) + Beta(4)*(V(i).^3);
                 i=i+1;
                 end
-    
-                R2(grau-1)= 1-((sum(SQe)/sum(Syy)));                
-
-            %Avaliando a quadlidade do modelo pela métrica R2 Ajustada:
-                n = length (Y);
-                p = length (Beta);
-              
-                R2aj (grau-1) = 1-((sum(SQe)/(n-p))/(sum(Syy)/(n-1)));
                 
-        case 4
-        % Regressão Polinomial de Grau 4.
-            X = ones (2250,5);
-            Y = ones (2250,1);
-            i=1;
-            while i<=2250
-                X(2250+i)= Vel(i);
-                X(4500+i) = Vel(i)^2;
-                X(6750+i) = Vel(i)^3;
-                X(9000+i) = Vel(i)^4;
-                Y(i)= Pot(i);
-                i = i+1;
-            end
-            
-            % Encontrar o vetor de coeficientes Beta.
-                Beta = inv(((X.')*X)) * ((X.')*Y);
-                
-            % Plotando o gráfico:
+        case 4 % Regressão Polinomial de Grau 4.
+            % Gerando o Polinômio:
                 x = 0:0.2:15;
-                Poli4 = Beta(1) + Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3) + Beta(5)*(x.^4);
-                plot (x, Poli4, 'b');
-                hold on;
-                plot (Vel, Pot, '.');
-                grid on;
-                
-             %Avaliando a qualidade do modelo pela métrica R2:
-                ymed = sum(Y)/ length(Y);
+                Poli = Beta(1) + Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3) + Beta(5)*(x.^4);
+            % Calculando os valores para a Potência estimada
                 i=1;
-                while i<=length (Y);
-                yest(i) = Beta(1) + Beta(2)*(Vel(i)) + Beta(3)*(Vel(i).^2) + Beta(4)*(Vel(i).^3) + Beta(5)*(Vel(i).^4);
-                SQe(i) = (Y(i)-yest(i))^2;
-                Syy(i) = (Y(i)-ymed)^2;
+                while i<=length (P);
+                yest(i) = Beta(1) + Beta(2)*(V(i)) + Beta(3)*(V(i).^2) + Beta(4)*(V(i).^3) + Beta(5)*(V(i).^4);
                 i=i+1;
                 end
-    
-                R2(grau-1)= 1-((sum(SQe)/sum(Syy)));
                 
-            %Avaliando a quadlidade do modelo pela métrica R2 Ajustada:
-                n = length (Y);
-                p = length (Beta);
-              
-                R2aj (grau-1) = 1-((sum(SQe)/(n-p))/(sum(Syy)/(n-1)));  
-                
-        case 5 
-            % Regressão Polinomial de Grau 3.
-            X = ones (2250,6);
-            Y = ones (2250,1);
-            i=1;
-            while i<=2250
-                X(2250+i)= Vel(i);
-                X(4500+i) = Vel(i)^2;
-                X(6750+i) = Vel(i)^3;
-                X(9000+i) = Vel(i)^4;
-                X(11250+i) = Vel(i)^5;
-                Y(i)= Pot(i);
-                i = i+1;
-            end
-            
-            % Encontrar o vetor de coeficientes Beta.
-                Beta = inv(((X.')*X)) * ((X.')*Y);
-                
-            % Plotando o gráfico:
+        case 5 % Regressão Polinomial de Grau 3.                
+            % Gerando o Polinômio:
                 x = 0:0.2:15;
-                Poli4 = Beta(1) +  Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3) + Beta(5)*(x.^4);
-                plot (x, Poli4, 'y');
-                hold on;
-                plot (Vel, Pot, '.');
-                grid on;
-                
-            %Avaliando a qualidade do modelo pela métrica R2:
-                ymed = sum(Y)/ length(Y);
+                Poli = Beta(1) +  Beta(2)*x + Beta(3)*(x.^2) + Beta(4)*(x.^3) + Beta(5)*(x.^4);
+            % Calculando os valores para a Potência estimada
                 i=1;
-                while i<=length (Y);
-                yest(i) = Beta(1) + Beta(2)*(Vel(i)) + Beta(3)*(Vel(i).^2) + Beta(4)*(Vel(i).^3) + Beta(5)*(Vel(i).^4) + Beta(6)*(Vel(i).^5);    
-                SQe(i) =  (Y(i)-yest(i))^2;
-                Syy(i) = (Y(i)-ymed)^2;
+                while i<=length (P);
+                yest(i) = Beta(1) + Beta(2)*(V(i)) + Beta(3)*(V(i).^2) + Beta(4)*(V(i).^3) + Beta(5)*(V(i).^4) + Beta(6)*(V(i).^5);
                 i=i+1;
-                end
-    
-                R2(grau-1)= 1-((sum(SQe)/sum(Syy)));
-
-            %Avaliando a quadlidade do modelo pela métrica R2 Ajustada:
-                n = length (Y);
-                p = length (Beta);
-              
-                R2aj (grau-1) = 1-((sum(SQe)/(n-p))/(sum(Syy)/(n-1)));
-              
+                end            
         otherwise
-            disp ('Este script só permite regressões de graus 2, 3, 4 e 5. Digite uma opção válida.')
-            
+            disp ('Este script só permite regressões de graus 2, 3, 4 e 5. Digite uma opção válida.')     
     end
+    
+    ymed = sum(P)/length(P);
+    SQe = (P-(yest')).^2;
+    Syy = (P-ymed).^2;
+    %Avaliando a qualidade do modelo pela métrica R2:
+    R2= 1-((sum(SQe)/sum(Syy)));
+    
+    %Avaliando a quadlidade do modelo pela métrica R2 Ajustada:
+    R2aj = 1-((sum(SQe)/(length(P) - length (Beta)))/(sum(Syy)/(length(P)-1)));
+    
+    plot (x, Poli, 'y');
+    hold on;
+    plot (V, P, '.');
+    grid on;
